@@ -3,13 +3,28 @@
   <head>
     <title>Google Calendar Event Inserter</title>
     <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+
+        background: linear-gradient(to right, #fdfbfb, #ebedee);
+      }
+    </style>
   </head>
   <body>
+    <div id="signin2"></div>
+
     <script type="text/javascript">
-      var CLIENT_ID = '670143956525-lltoepbtinc6eu4td3ga6pqebo3ik1f6.apps.googleusercontent.com';
-      var API_KEY = 'AIzaSyCjX3qzkt1my0Tf8apNskauIj6yb3MHzvc';
-      var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
-      var SCOPES = "https://www.googleapis.com/auth/calendar";
+      const CLIENT_ID = '670143956525-lltoepbtinc6eu4td3ga6pqebo3ik1f6.apps.googleusercontent.com';
+      const API_KEY = 'AIzaSyCjX3qzkt1my0Tf8apNskauIj6yb3MHzvc';
+      const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+      const SCOPES = "https://www.googleapis.com/auth/calendar";
 
       function handleClientLoad() {
         gapi.load('client:auth2', initClient);
@@ -28,13 +43,19 @@
       }
 
       function updateSigninStatus(isSignedIn) {
-        console.log('updateSigninStatus:', isSignedIn);
-
         if (isSignedIn) {
           insertEvent();
-        } else {
-          gapi.auth2.getAuthInstance().signIn();
         }
+      }
+
+      function renderButton() {
+        gapi.signin2.render('signin2', {
+          'scope': SCOPES,
+          'width': 240,
+          'height': 50,
+          'longtitle': true,
+          'theme': 'dark'
+        });
       }
 
       function insertEvent() {
@@ -46,7 +67,6 @@
         }
 
         const event = JSON.parse(params.get('event'));
-
         const request = gapi.client.calendar.events.insert({
           'calendarId': 'primary',
           'resource': event
@@ -63,5 +83,7 @@
       onload="this.onload=function(){};handleClientLoad()"
       onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
   </body>
 </html>
