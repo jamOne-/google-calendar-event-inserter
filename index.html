@@ -46,7 +46,16 @@
         }
 
         const event = JSON.parse(params.get('event'));
-        console.log(event);
+        const request = gapi.client.calendar.events.insert({
+          'calendarId': 'primary',
+          'resource': event
+        });
+
+        request.execute(event => {
+          appendPre('Event created: ' + event.htmlLink);
+        });
+
+        // console.log(event);
         // window.close();
       }
 
